@@ -1,3 +1,111 @@
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T133834.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T133815.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T133752.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T133049.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T132219.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=教程
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131644.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=教程
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131641.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Vue
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131633.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?Vue=
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131622.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?教程=
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131606.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?教程=
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131550.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?java=
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-17T131528.200.json
+
+###
+
 GET http://localhost:8880/ebook/list
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
