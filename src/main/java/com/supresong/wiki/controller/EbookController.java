@@ -1,6 +1,7 @@
 package com.supresong.wiki.controller;
 
 import com.supresong.wiki.domain.Ebook;
+import com.supresong.wiki.resp.CommonResp;
 import com.supresong.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,10 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public List<Ebook> list() {
-        return ebookService.list();
+    public CommonResp list() {
+        CommonResp<List<Ebook>> resp = new CommonResp<>();
+        List<Ebook> list = ebookService.list();
+        resp.setContent(list);
+        return resp;
     }
 }

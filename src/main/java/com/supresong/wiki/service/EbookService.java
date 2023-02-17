@@ -11,9 +11,9 @@ import java.util.List;
 public class EbookService {
 
     @Autowired
-    private EbookMapper ebookMapper;
+    private EbookMapper demoMapper;
 
     public List<Ebook> list(){
-        return ebookMapper.selectByExample(null);
+        return demoMapper.selectByExample(null);
     }
 }
