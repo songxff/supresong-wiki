@@ -3,6 +3,15 @@ Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
 Accept-Encoding: br,deflate,gzip,x-gzip
 
+<> 2023-02-17T134811.200.json
+
+###
+
+GET http://localhost:8880/ebook/list?name=Spring
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
 <> 2023-02-17T133834.200.json
 
 ###
