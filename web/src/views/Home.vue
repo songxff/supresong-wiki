@@ -11,7 +11,7 @@
           <template #title>
               <span>
                 <user-outlined />
-                subnav 1111
+                subnav 1
               </span>
           </template>
           <a-menu-item key="1">option1</a-menu-item>
@@ -48,16 +48,36 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Content
+      <pre>{{ebooks}}{{books2}}</pre>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref, reactive, toRef } from 'vue';
+import axios from 'axios'
 
 
 export default defineComponent({
-  name: 'Home'
+  name: 'Home',
+  setup() {
+    console.log("setup");
+    const ebooks = ref();
+    const ebooks1 = reactive({books:[]});
+
+    onMounted(() =>{
+      console.log("onMount");
+      axios.get("http://localhost:8880/ebook/list?name=Spring").then(function (response) {
+        const data = response.data;
+        ebooks.value = data.content;
+        ebooks1.books = data.content;
+      });
+    });
+    return{
+      ebooks,
+      books2: toRef(ebooks1, "books")
+    }
+  }
+
 });
 </script>
