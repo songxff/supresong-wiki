@@ -13,11 +13,11 @@
           @change="handleTableChange"
       >
         <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
+          <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-            <a-button type="primary" >
+            <a-button type="primary" @click="edit">
               编辑
             </a-button>
             <a-button type="danger">
@@ -29,37 +29,41 @@
     </a-layout-content>
   </a-layout>
 
-<!--  <a-modal-->
-<!--      title="电子书表单"-->
-<!--      v-model:visible="modalVisible"-->
-<!--      :confirm-loading="modalLoading"-->
-<!--      @ok="handleModalOk"-->
-<!--  >-->
-<!--    <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">-->
-<!--      <a-form-item label="封面">-->
-<!--        <a-input v-model:value="ebook.cover" />-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="名称">-->
-<!--        <a-input v-model:value="ebook.name" />-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="分类">-->
-<!--        <a-cascader-->
-<!--            v-model:value="categoryIds"-->
-<!--            :field-names="{ label: 'name', value: 'id', children: 'children' }"-->
-<!--            :options="level1"-->
-<!--        />-->
-<!--      </a-form-item>-->
-<!--      <a-form-item label="描述">-->
-<!--        <a-input v-model:value="ebook.description" type="textarea" />-->
-<!--      </a-form-item>-->
-<!--    </a-form>-->
-<!--  </a-modal>-->
+  <a-modal
+      title="电子书表单"
+      v-model:visible="modalVisible"
+      :confirm-loading="modalLoading"
+      @ok="handleModalOk"
+  >
+    <p>test</p>
+  </a-modal>
+
+  <!--    <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">-->
+  <!--      <a-form-item label="封面">-->
+  <!--        <a-input v-model:value="ebook.cover" />-->
+  <!--      </a-form-item>-->
+  <!--      <a-form-item label="名称">-->
+  <!--        <a-input v-model:value="ebook.name" />-->
+  <!--      </a-form-item>-->
+  <!--      <a-form-item label="分类">-->
+  <!--        <a-cascader-->
+  <!--            v-model:value="categoryIds"-->
+  <!--            :field-names="{ label: 'name', value: 'id', children: 'children' }"-->
+  <!--            :options="level1"-->
+  <!--        />-->
+  <!--      </a-form-item>-->
+  <!--      <a-form-item label="描述">-->
+  <!--        <a-input v-model:value="ebook.description" type="textarea" />-->
+  <!--      </a-form-item>-->
+  <!--    </a-form>-->
+  <!--  </a-modal>-->
 </template>
 
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
+
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
@@ -74,7 +78,7 @@ export default defineComponent({
       {
         title: '封面',
         dataIndex: 'cover',
-        slots: { customRender: 'cover' }
+        slots: {customRender: 'cover'}
       },
       {
         title: '名称',
@@ -83,11 +87,11 @@ export default defineComponent({
       {
         title: '分类一',
         key: 'category1Id',
-        dateIndex: 'category1Id'
+        dataIndex: 'category1Id'
       },
       {
         title: '分类二',
-        dateIndex: 'category2Id'
+        dataIndex: 'category2Id'
       },
       {
         title: '文档数',
@@ -104,7 +108,7 @@ export default defineComponent({
       {
         title: 'Action',
         key: 'action',
-        slots: { customRender: 'action' }
+        slots: {customRender: 'action'}
       }
     ];
     /**
@@ -118,7 +122,7 @@ export default defineComponent({
           page: params.page,
           size: params.size
         }
-      }).then((response)=>{
+      }).then((response) => {
         loading.value = false;
         const data = response.data;
         ebooks.value = data.content.list;
@@ -137,6 +141,27 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
+
+
+    // -------- 表单 ---------
+    const modalVisible = ref(false);
+    const modalLoading = ref(false);
+    const handleModalOk = () => {
+      modalLoading.value = true;
+      setTimeout(() => {
+        modalVisible.value = false;
+        modalLoading.value = false;
+      }, 2000);
+    };
+
+    /**
+     * 编辑
+     */
+    const edit = () => {
+      modalVisible.value = true;
+    };
+
+
     onMounted(() => {
       handleQuery({
         page: 1,
@@ -148,8 +173,19 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+      edit,
+      modalVisible,
+      modalLoading,
+      handleModalOk
     }
   }
 });
 </script>
+
+<style scoped>
+img {
+  width: 50px;
+  height: 50px;
+}
+</style>
