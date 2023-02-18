@@ -107,12 +107,10 @@ export default defineComponent({
       {type: 'LikeOutlined', text: '156'},
       {type: 'MessageOutlined', text: '2'},
     ];
-    console.log("setup");
     const ebooks = ref();
     const ebooks1 = reactive({books: []});
 
     onMounted(() => {
-      console.log("onMount222");
       axios.get("/ebook/list").then(function (response) {
         const data = response.data;
         ebooks.value = data.content;
