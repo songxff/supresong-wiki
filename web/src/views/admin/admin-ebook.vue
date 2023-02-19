@@ -47,28 +47,29 @@
   >
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover" />
+        <a-input v-model:value="ebook.cover"/>
       </a-form-item>
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="ebook.name"/>
       </a-form-item>
       <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id" />
+        <a-input v-model:value="ebook.category1Id"/>
       </a-form-item>
       <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
+        <a-input v-model:value="ebook.category2Id"/>
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="textarea" />
+        <a-input v-model:value="ebook.description" type="textarea"/>
       </a-form-item>
     </a-form>
-    </a-modal>
+  </a-modal>
 </template>
 
 
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
+import {message} from 'ant-design-vue'
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -131,10 +132,15 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data.content.list;
-        // 重置分页按钮
-        pagination.value.current = params.page;
-        pagination.value.total = data.content.total;
+        if (data.success) {
+          ebooks.value = data.content.list;
+          // 重置分页按钮
+          pagination.value.current = params.page;
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message)
+        }
+
       });
     };
     /**
@@ -157,7 +163,7 @@ export default defineComponent({
       modalLoading.value = true;
       axios.post("/ebook/save", ebook.value).then((response) => {
         const data = response.data;
-        if (data.success){
+        if (data.success) {
           modalVisible.value = false;
           modalLoading.value = false;
           //重新加载当前页码
@@ -189,7 +195,7 @@ export default defineComponent({
     const del = (id: string) => {
       axios.delete("/ebook/delete/" + id).then((response) => {
         const data = response.data;
-        if (data.success){
+        if (data.success) {
           //重新加载当前页码
           handleQuery({
             page: pagination.value.current,
