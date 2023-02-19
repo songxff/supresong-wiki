@@ -1,6 +1,6 @@
-package com.supresong.wiki.resp;
+package com.supresong.wiki.req;
 
-public class EbookResp{
+public class EbookSaveReq {
     private Long id;
 
     private String name;
