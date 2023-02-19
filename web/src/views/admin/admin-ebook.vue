@@ -186,7 +186,7 @@ export default defineComponent({
     /**
      * 删除
      */
-    const del = (id: number) => {
+    const del = (id: string) => {
       axios.delete("/ebook/delete/" + id).then((response) => {
         const data = response.data;
         if (data.success){
