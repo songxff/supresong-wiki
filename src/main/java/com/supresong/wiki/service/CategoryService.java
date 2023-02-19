@@ -30,9 +30,22 @@ public class CategoryService {
     @Autowired
     private SnowFlake snowFlake;
 
+    public List<CategoryQueryResp> all(){
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
+        List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+
+        List<CategoryQueryResp> respkList = CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+
+        //进行返回经过构建后的返回值
+        return respkList;
+    }
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req){
         CategoryExample categoryExample = new CategoryExample();
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
+        if(!ObjectUtils.isEmpty(req.getName())) {
+            criteria.andNameLike("%" + req.getName() + "%");
+        }
         PageHelper.startPage(req.getPage(),req.getSize());
         List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
 
