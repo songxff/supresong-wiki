@@ -18,9 +18,9 @@ public class SnowFlake {
     /**
      * 每一部分占用的位数
      */
-    private final static long SEQUENCE_BIT = 12; //序列号占用的位数
-    private final static long MACHINE_BIT = 5;   //机器标识占用的位数
-    private final static long DATACENTER_BIT = 5;//数据中心占用的位数
+    private final static long SEQUENCE_BIT = 10; //序列号占用的位数
+    private final static long MACHINE_BIT = 3;   //机器标识占用的位数
+    private final static long DATACENTER_BIT = 3;//数据中心占用的位数
 
     /**
      * 每一部分的最大值
@@ -110,8 +110,6 @@ public class SnowFlake {
         SnowFlake snowFlake = new SnowFlake(1, 1);
 
         long start = System.currentTimeMillis();
-
-
         for (int i = 0; i < 10; i++) {
             System.out.println(snowFlake.nextId());
             System.out.println(System.currentTimeMillis() - start);
