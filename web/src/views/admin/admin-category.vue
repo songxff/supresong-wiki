@@ -7,12 +7,8 @@
       <p>
         <a-form layout="inline" :model="param">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称">
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" @click="handleQueryName(param.name)">
-              查询
+            <a-button type="primary" @click="handleQuery()">
+              刷新
             </a-button>
           </a-form-item>
           <a-form-item>
@@ -62,7 +58,17 @@
         <a-input v-model:value="category.name"/>
       </a-form-item>
       <a-form-item label="父分类">
-        <a-input v-model:value="category.parent"/>
+        <a-select
+            v-model:value="category.parent"
+            ref="select"
+        >
+          <a-select-option :value="0">
+            无
+          </a-select-option>
+          <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="category.id === c.id">
+            {{c.name}}
+          </a-select-option>
+        </a-select>
       </a-form-item>
       <a-form-item label="顺序">
         <a-input v-model:value="category.sort" type="textarea"/>
@@ -131,28 +137,9 @@ export default defineComponent({
         if (data.success) {
           categorys.value = data.content;
           console.log("原始数组：", categorys.value);
-
           level1.value = [];
           level1.value = Tool.array2Tree(categorys.value, 0);
           console.log("树形结构：", level1);
-        } else {
-          message.error(data.message)
-        }
-
-      });
-    };
-    const handleQueryName = (param: any) => {
-      loading.value = true;
-      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
-      axios.get("/category/list", {
-        params: {
-          name: param
-        }
-      }).then((response) => {
-        loading.value = false;
-        const data = response.data;
-        if (data.success) {
-          categorys.value = data.content.list;
         } else {
           message.error(data.message)
         }
@@ -219,7 +206,6 @@ export default defineComponent({
       columns,
       loading,
       handleQuery,
-      handleQueryName,
 
       //点击操作
       edit,
