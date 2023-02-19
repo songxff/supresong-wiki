@@ -1,6 +1,6 @@
-package com.supresong.wiki.domain;
+package com.supresong.wiki.resp;
 
-public class Category {
+public class CategoryQueryResp {
     private Long id;
 
     private Long parent;
