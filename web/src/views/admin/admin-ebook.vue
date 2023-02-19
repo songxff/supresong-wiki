@@ -1,22 +1,20 @@
 <template>
-
   <a-layout>
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <p>
-        <a-form layout="inline" :model="param">
+        <a-form :model="param" layout="inline">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称">
-            </a-input>
+            <a-input v-model:value="param.name" placeholder="名称" size="large"/>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})" size="large">
               查询
             </a-button>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="add()">
+            <a-button type="primary" @click="add()" size="large">
               新增
             </a-button>
           </a-form-item>
@@ -39,19 +37,20 @@
               编辑
             </a-button>
             <a-popconfirm
-                title="删除后不可恢复,确认删除？"
+                title="删除后不可恢复，确认删除？"
                 ok-text="是"
                 cancel-text="否"
-                @confirm="del(record.id)"
+                @confirm="handleDelete(record.id)"
             >
-              <a-button type="danger">删除</a-button>
+              <a-button type="primary" danger>
+                删除
+              </a-button>
             </a-popconfirm>
           </a-space>
         </template>
       </a-table>
     </a-layout-content>
   </a-layout>
-
   <a-modal
       title="电子书表单"
       v-model:visible="modalVisible"
@@ -60,43 +59,43 @@
   >
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover"/>
+        <a-input v-model:value="ebook.cover" />
       </a-form-item>
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name"/>
+        <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id"/>
-      </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id"/>
+      <a-form-item label="分类">
+        <a-cascader v-model:value="categoryIds"
+                    :field-names="{ label: 'name', value: 'id', children: 'children' }"
+                    @change="searchCascader"
+                    :options="level1" />
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="textarea"/>
+        <a-input v-model:value="ebook.description" type="textarea" />
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
-
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
-import {message} from 'ant-design-vue';
+import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
   setup() {
-    const param = ref();
-    param.value = {};
+    const param = ref()
+    param.value = {}
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 4,
+      pageSize: 10,
       total: 0
     });
     const loading = ref(false);
+
     const columns = [
       {
         title: '封面',
@@ -114,6 +113,7 @@ export default defineComponent({
       },
       {
         title: '分类二',
+        key: 'category2Id',
         dataIndex: 'category2Id'
       },
       {
@@ -129,37 +129,57 @@ export default defineComponent({
         dataIndex: 'voteCount'
       },
       {
-        title: '操作',
+        title: 'Action',
         key: 'action',
         slots: {customRender: 'action'}
       }
     ];
+
     /**
      * 数据查询
      **/
     const handleQuery = (params: any) => {
       loading.value = true;
-      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       axios.get("/ebook/list", {
         params: {
           page: params.page,
           size: params.size,
           name: param.value.name
         }
-      }).then((response) => {
+      }).then((resp) => {
         loading.value = false;
-        const data = response.data;
+        const data = resp.data;
         if (data.success) {
           ebooks.value = data.content.list;
+
           // 重置分页按钮
           pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
+          pagination.value.total = data.content.total
         } else {
-          message.error(data.message)
+          message.error(data.message);
         }
-
       });
     };
+
+    /**
+     * 查询所有分类
+     **/
+    const level1 = ref()
+    const handleQueryCategory = () => {
+      loading.value = true
+      axios.get("/category/all").then((resp) => {
+        loading.value = false
+        const data = resp.data
+        if (data.success) {
+          const categories = data.content
+          level1.value = []
+          level1.value = Tool.array2Tree(categories, 0)
+        } else {
+          message.error(data.message);
+        }
+      })
+    }
+
     /**
      * 表格点击页码时触发
      */
@@ -169,88 +189,102 @@ export default defineComponent({
         page: pagination.current,
         size: pagination.pageSize
       });
-    }
+    };
 
-
-    // -------- 表单 ---------
-    const ebook = ref({});
-    const modalVisible = ref(false);
-    const modalLoading = ref(false);
+    // ---------- 表单 -----------
+    const categoryIds = ref()
+    const ebook = ref()
+    const modalVisible = ref(false)
+    const modalLoading = ref(false)
     const handleModalOk = () => {
-      modalLoading.value = true;
-      axios.post("/ebook/save", ebook.value).then((response) => {
-        modalLoading.value = false;
-        const data = response.data;
+      modalLoading.value = true
+      ebook.value.category1Id = categoryIds.value[0]
+      ebook.value.category2Id = categoryIds.value[1]
+      axios.post("/ebook/save", ebook.value).then((resp) => {
+        modalLoading.value = false
+        const data = resp.data
         if (data.success) {
-          modalVisible.value = false;
-          //重新加载当前页码
+          modalVisible.value = false
+
+          // 重新加载列表
           handleQuery({
             page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
-        }else{
-          message.error(data.message);
+            size: pagination.value.pageSize
+          })
+        } else {
+          message.error(data.message)
         }
       });
+    }
 
-    };
     /**
      * 编辑
      */
     const edit = (record: any) => {
-      modalVisible.value = true;
-      ebook.value = Tool.copy(record);
-    };
+      modalVisible.value = true
+      ebook.value = Tool.copy(record)
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+      console.log('=========' + categoryIds.value)
+    }
+
     /**
      * 新增
      */
     const add = () => {
-      modalVisible.value = true;
-      ebook.value = {};
-    };
+      modalVisible.value = true
+      ebook.value = {}
+    }
+
     /**
      * 删除
      */
-    const del = (id: string) => {
-      axios.delete("/ebook/delete/" + id).then((response) => {
-        const data = response.data;
+    const handleDelete = (id: string) => {
+      console.log('==========================' + id)
+      axios.delete("/ebook/delete/" + id).then((resp) => {
+        const data = resp.data
         if (data.success) {
-          //重新加载当前页码
+          // 重新加载列表
           handleQuery({
             page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+            size: pagination.value.pageSize
+          })
         }
-      });
-    };
+      })
+    }
 
+    const searchCascader = () => {
+      console.log('=========' + categoryIds.value)
+    }
 
     onMounted(() => {
+      handleQueryCategory()
       handleQuery({
         page: 1,
-        size: pagination.value.pageSize,
-      });
-    });
+        size: pagination.value.pageSize
+      })
+    })
+
     return {
-      //表格
-      param,
       ebooks,
+      categoryIds,
       pagination,
       columns,
       loading,
+      param,
+      level1,
       handleTableChange,
       handleQuery,
+      handleQueryCategory,
 
-      //点击操作
-      edit,
-      add,
-
-      //表单
       ebook,
       modalVisible,
       modalLoading,
+      edit,
+      add,
       handleModalOk,
-      del
+      handleDelete,
+
+      searchCascader
     }
   }
 });
