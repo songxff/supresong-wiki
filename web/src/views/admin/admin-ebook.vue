@@ -31,6 +31,9 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
+        <template v-slot:category="{ text, record }">
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+        </template>
         <template v-slot:action="{ text, record }">
           <a-space size="small">
             <a-button type="primary" @click="edit(record)">
@@ -59,19 +62,19 @@
   >
     <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
       <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover" />
+        <a-input v-model:value="ebook.cover"/>
       </a-form-item>
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="ebook.name"/>
       </a-form-item>
       <a-form-item label="分类">
         <a-cascader v-model:value="categoryIds"
                     :field-names="{ label: 'name', value: 'id', children: 'children' }"
                     @change="searchCascader"
-                    :options="level1" />
+                    :options="level1"/>
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="textarea" />
+        <a-input v-model:value="ebook.description" type="textarea"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -107,14 +110,8 @@ export default defineComponent({
         dataIndex: 'name'
       },
       {
-        title: '分类一',
-        key: 'category1Id',
-        dataIndex: 'category1Id'
-      },
-      {
-        title: '分类二',
-        key: 'category2Id',
-        dataIndex: 'category2Id'
+        title: '分类',
+        slots: {customRender: 'category'}
       },
       {
         title: '文档数',
@@ -165,19 +162,31 @@ export default defineComponent({
      * 查询所有分类
      **/
     const level1 = ref()
+    let categories: any
     const handleQueryCategory = () => {
       loading.value = true
       axios.get("/category/all").then((resp) => {
         loading.value = false
         const data = resp.data
         if (data.success) {
-          const categories = data.content
+          categories = data.content
           level1.value = []
           level1.value = Tool.array2Tree(categories, 0)
         } else {
           message.error(data.message);
         }
       })
+    }
+
+    const getCategoryName = (cid: number) => {
+      let result = ""
+      categories.forEach((item: any) => {
+        //  后端为了前端不丢失Long类型精度，把id以String类型返回给前端，所以id是String
+        if (item.id === cid) {
+          result = item.name
+        }
+      })
+      return result
     }
 
     /**
@@ -275,6 +284,8 @@ export default defineComponent({
       handleTableChange,
       handleQuery,
       handleQueryCategory,
+      getCategoryName,
+
 
       ebook,
       modalVisible,
