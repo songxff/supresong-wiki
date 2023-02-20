@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
@@ -26,10 +27,10 @@ public class DocService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DocService.class);
 
-    @Autowired
+    @Resource
     private DocMapper docMapper;
 
-    @Autowired
+    @Resource
     private ContentMapper contentMapper;
 
     @Autowired
