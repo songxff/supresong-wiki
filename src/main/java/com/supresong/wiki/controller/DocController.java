@@ -2,8 +2,8 @@ package com.supresong.wiki.controller;
 
 import com.supresong.wiki.req.DocQueryReq;
 import com.supresong.wiki.req.DocSaveReq;
-import com.supresong.wiki.resp.DocQueryResp;
 import com.supresong.wiki.resp.CommonResp;
+import com.supresong.wiki.resp.DocQueryResp;
 import com.supresong.wiki.resp.PageResp;
 import com.supresong.wiki.service.DocService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import java.util.List;
 public class DocController {
     @Autowired
     private DocService docService;
+
+
 
     @GetMapping("/all/{ebookId}")
     public CommonResp all(@PathVariable Long ebookId) {
