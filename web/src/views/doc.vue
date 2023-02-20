@@ -10,6 +10,7 @@
               :tree-data="level1"
               @select="onSelect"
               :replace-fields="{title: 'name', key: 'id', value: 'id'}"
+              :defaultSelectedKeys="defaultSelectedKeys"
               :default-expand-all="true"
           >
           </a-tree>
@@ -36,23 +37,12 @@ export default {
     const route = useRoute();
     const docs = ref();
     const html = ref();
-    /**
-     * 查询所有文档
-     **/
-    const level1 = ref()
-    level1.value = []
-    const handleQuery = () => {
-      axios.get("/doc/all/" + route.query.ebookId).then((resp) => {
-        const data = resp.data;
-        if (data.success) {
-          docs.value = data.content;
-          level1.value = []
-          level1.value = Tool.array2Tree(docs.value, 0)
-        } else {
-          message.error(data.message);
-        }
-      })
-    }
+    const defaultSelectedKeys = ref();
+    defaultSelectedKeys.value = [];
+
+    const level1 = ref(); // 一级文档树，children属性就是二级文档
+    level1.value = [];
+
     /**
      * 内容查询
      **/
@@ -61,6 +51,25 @@ export default {
         const data = response.data;
         if (data.success) {
           html.value = data.content;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+    /**
+     * 数据查询
+     **/
+    const handleQuery = () => {
+      axios.get("/doc/all/" + route.query.ebookId).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          docs.value = data.content;
+          level1.value = [];
+          level1.value = Tool.array2Tree(docs.value, 0);
+          if (Tool.isNotEmpty(level1)) {
+            defaultSelectedKeys.value = [level1.value[0].id];
+            handleQueryContent(level1.value[0].id);
+          }
         } else {
           message.error(data.message);
         }
@@ -80,7 +89,8 @@ export default {
     return {
       level1,
       html,
-      onSelect
+      onSelect,
+      defaultSelectedKeys
     }
   }
 }
