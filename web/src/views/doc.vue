@@ -32,7 +32,7 @@ import {useRoute} from "vue-router";
 
 
 export default {
-  name: "doc",
+  name: "Doc",
   setup() {
     const route = useRoute();
     const docs = ref();

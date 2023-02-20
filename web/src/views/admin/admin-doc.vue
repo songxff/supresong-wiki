@@ -112,7 +112,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import E from 'wangeditor';
 
 export default defineComponent({
-  name: 'AdminDoc',
+  name: 'Doc',
   setup() {
     const editor = new E('#content')
     const route = useRoute();
