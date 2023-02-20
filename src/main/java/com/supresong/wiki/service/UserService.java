@@ -8,6 +8,7 @@ import com.supresong.wiki.exception.BusinessException;
 import com.supresong.wiki.exception.BusinessExceptionCode;
 import com.supresong.wiki.mapper.UserMapper;
 import com.supresong.wiki.req.UserQueryReq;
+import com.supresong.wiki.req.UserResetPasswordReq;
 import com.supresong.wiki.req.UserSaveReq;
 import com.supresong.wiki.resp.PageResp;
 import com.supresong.wiki.resp.UserQueryResp;
@@ -105,6 +106,14 @@ public class UserService {
         } else {
             return userList.get(0);
         }
+    }
+
+    /**
+     * 修改密码
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
 }
