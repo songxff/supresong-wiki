@@ -81,4 +81,17 @@ public class UserController {
         return resp;
     }
 
+    /**
+     * 退出登录,使redis数据失效
+     * @param token
+     * @return
+     */
+    @GetMapping("/logout/{token}")
+    public CommonResp logout(@PathVariable String token) {
+        CommonResp resp = new CommonResp<>();
+        redisTemplate.delete(token);
+        LOG.info("从redis中删除token: {}", token);
+        return resp;
+    }
+
 }
