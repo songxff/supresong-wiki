@@ -1,3 +1,13 @@
+GET http://localhost:8880/redis/get/282901210569248768
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-21T001032.200.json
+
+###
+
 GET http://localhost:8880/redis/get/282880305684156416
 Accept: application/json
 Connection: Keep-Alive
@@ -438,15 +448,6 @@ User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
 Accept-Encoding: br,deflate,gzip,x-gzip
 
 <> 2023-02-16T235449.200.json
-
-###
-
-GET http://localhost:8880/test/list
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2023-02-16T235315.200.json
 
 ###
 
