@@ -4,6 +4,7 @@
       <a-menu
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
+          @click="handleClick"
       >
         <a-menu-item key="welcome">
           <router-link :to="'/'">
@@ -13,7 +14,7 @@
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
-            <span><user-putlined />{{item.name}}</span>
+            <span><user-outlined />{{item.name}}</span>
           </template>
           <a-menu-item v-for="child in item.children" :key="child.id">
             <MailOutlined /><span>{{child.name}}</span>
@@ -24,7 +25,10 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-list item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }" :data-source="ebooks">
+      <div class="welcome" v-show="isShowWelcome">
+        <h1>欢迎使用supresong's知识库</h1>
+      </div>
+      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3 }" :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -51,10 +55,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref, reactive, toRef} from 'vue';
-import axios from 'axios'
+import { defineComponent, onMounted, ref, reactive, toRef } from 'vue';
+import axios from 'axios';
+import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
-import {message} from "ant-design-vue";
 import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue';
 
 // const listData: Record<string, string>[] = [];
@@ -72,18 +76,8 @@ import {StarOutlined, LikeOutlined, MessageOutlined} from '@ant-design/icons-vue
 
 export default defineComponent({
   name: 'Home',
-  components: {
-    StarOutlined,
-    LikeOutlined,
-    MessageOutlined,
-  },
   setup() {
-    const pagination = {
-      onChange: (page: number) => {
-        console.log(page);
-      },
-      pageSize: 3,
-    };
+    const ebooks = ref()
     const actions: Record<string, string>[] = [
       {type: 'StarOutlined', text: '156'},
       {type: 'LikeOutlined', text: '156'},
@@ -108,33 +102,45 @@ export default defineComponent({
       })
     }
 
-
-    const ebooks = ref();
-    const ebooks1 = reactive({books: []});
-
-    onMounted(() => {
+    const handleQueryEbook = (category2Id: any) => {
       axios.get("/ebook/list", {
         params: {
           page: 1,
-          size: 1000
+          size: 1000,
+          category2Id: category2Id
         }
-      }).then(function (response) {
-        // 把响应里的data拿出来
-        const data = response.data;
-        ebooks.value = data.content.list;//content是电子书列表
-        // ebooks1.books = data.content;
-        console.log(response);
-      });
+      }).then((resp) => {
+        const data = resp.data
+        ebooks.value = data.content.list
+      })
+    }
+
+    const isShowWelcome = ref(true)
+
+    const handleClick = (value: any) => {
+      if (value.key === 'welcome') {
+        isShowWelcome.value = true
+      } else {
+        isShowWelcome.value = false
+        handleQueryEbook(value.key)
+      }
+    }
+
+    onMounted(() => {
+
       handleQueryCategory()
-    });
-    return{
+    })
+
+    return {
       ebooks,
-      // ebooks2: toRef(ebooks1,"books"),
-      pagination,
       actions,
+
       level1,
-      handleQueryCategory
-    };
+      handleQueryCategory,
+
+      isShowWelcome,
+      handleClick
+    }
   }
 });
 </script>
