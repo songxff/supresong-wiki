@@ -37,7 +37,7 @@
                 title="删除后不可恢复,确认删除？"
                 ok-text="是"
                 cancel-text="否"
-                @confirm="del(record.id)"
+                @confirm="showConfirm(record.id)"
             >
               <a-button type="danger">删除</a-button>
             </a-popconfirm>
@@ -81,11 +81,13 @@
 
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from 'vue';
+import {defineComponent, onMounted, ref, createVNode} from 'vue';
 import axios from 'axios';
 import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import { Modal } from 'ant-design-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -128,7 +130,6 @@ export default defineComponent({
      * }]
      */
     const level1 = ref(); // 一级文档树，children属性就是二级文档
-
     /**
      * 数据查询
      **/
@@ -136,7 +137,7 @@ export default defineComponent({
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       level1.value = [];
-      axios.get("/doc/all").then((response) => {
+      axios.get("/doc/all/"+route.query.ebookId).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
@@ -202,11 +203,14 @@ export default defineComponent({
      * 查找整根树枝
      */
     let ids: Array<string> = []
+    let idsName: Array<string> = []
     const getDeleteIds = (treeSelectData: any, id: any) => {
       for (let i = 0; i < treeSelectData.length; i++) {
         const node = treeSelectData[i]
         if (node.id === id) {
           ids.push(node.id)
+          idsName.push(node.name)
+
           const children = node.children
           if (Tool.isNotEmpty(children)) {
             for (let j = 0; j < children.length; j++) {
@@ -250,7 +254,7 @@ export default defineComponent({
      * 删除
      */
     const del = (id: string) => {
-      getDeleteIds(level1.value, id)
+
       // join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串
       axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
         const data = response.data;
@@ -260,6 +264,23 @@ export default defineComponent({
         }
       });
     };
+    /*
+    * 二次确认弹框*/
+    const showConfirm = (id: string) => {
+      ids = []
+      idsName = []
+      getDeleteIds(level1.value, id)
+      Modal.confirm({
+        title: '重要提醒',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '将删除: 【'+ idsName +'】。删除后不可恢复，确认删除？',
+        onOk() {
+          del(id)
+        },
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onCancel() {},
+      })
+    }
 
 
     onMounted(() => {
@@ -278,6 +299,7 @@ export default defineComponent({
       //点击操作
       edit,
       add,
+      showConfirm,
 
       //表单
       doc,
