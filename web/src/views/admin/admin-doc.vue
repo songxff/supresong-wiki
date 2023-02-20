@@ -82,11 +82,19 @@
               <a-input v-model:value="doc.sort" placeholder="请输入顺序"/>
             </a-form-item>
             <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent()">
+                <EyeOutlined /> 内容预览
+              </a-button>
+            </a-form-item>
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
           </a-form>
         </a-col>
       </a-row>
+      <a-drawer width="900" placement="right" :closable="false" :visible="drawerVisible" @close="onDrawerClose">
+        <div class="wangeditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
 
     </a-layout-content>
   </a-layout>
@@ -314,7 +322,18 @@ export default defineComponent({
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onCancel() {},
       })
-    }
+    };
+    // ----------------富文本预览--------------
+    const drawerVisible = ref(false);
+    const previewHtml = ref();
+    const handlePreviewContent = () => {
+      const html = editor.txt.html();
+      previewHtml.value = html;
+      drawerVisible.value = true;
+    };
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    };
 
 
     onMounted(() => {
@@ -330,6 +349,10 @@ export default defineComponent({
       loading,
       handleQuery,
       treeSelectData,
+      drawerVisible,
+      previewHtml,
+      handlePreviewContent,
+      onDrawerClose,
 
       //点击操作
       edit,
