@@ -167,16 +167,17 @@ export default defineComponent({
     treeSelectData.value = []
     const doc = ref();
     doc.value = {};
-    const modalLoading = ref(false);
+
     const handleSave = () => {
-      modalLoading.value = true;
+
       doc.value.content = editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
-        modalLoading.value = false;
+
         const data = response.data;
         if (data.success) {
           //重新加载当前页码
           handleQuery();
+          message.success("保存成功！")
         }else{
           message.error(data.message);
         }
@@ -256,6 +257,9 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
+      // 清空富文本内容
+      editor.txt.html("")
+
       doc.value = Tool.copy(record);
       handleQueryContent();
       treeSelectData.value = Tool.copy(level1.value)
@@ -266,6 +270,9 @@ export default defineComponent({
      * 新增
      */
     const add = () => {
+      // 清空富文本内容
+      editor.txt.html("")
+
       doc.value = {
         ebookId: route.query.ebookId
       };
@@ -326,7 +333,6 @@ export default defineComponent({
 
       //表单
       doc,
-      modalLoading,
       handleSave,
       del
     }
