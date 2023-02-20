@@ -15,24 +15,27 @@
           </a-tree>
         </a-col>
         <a-col :span="18">
-
+          <div :innerHTML="html"></div>
         </a-col>
       </a-row>
     </a-layout-content>
   </a-layout>
 </template>
 
-<script>
-import {useRoute} from "vue-router";
-import {defineComponent, onMounted, ref} from 'vue';
-import axios from 'axios'
+<script lang="ts">
+import { defineComponent, onMounted, ref, createVNode } from 'vue';
+import axios from 'axios';
+import {message} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
-import {message} from "ant-design-vue";
+import {useRoute} from "vue-router";
+
+
 export default {
   name: "doc",
   setup() {
-    const route = useRoute()
-    const docs = ref()
+    const route = useRoute();
+    const docs = ref();
+    const html = ref();
     /**
      * 查询所有文档
      **/
@@ -50,11 +53,34 @@ export default {
         }
       })
     }
+    /**
+     * 内容查询
+     **/
+    const handleQueryContent = (id: number) => {
+      axios.get("/doc/find-content/" + id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          html.value = data.content;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+    const onSelect = (selectedKeys: any, info: any) => {
+      console.log('selected', selectedKeys, info);
+      if (Tool.isNotEmpty(selectedKeys)) {
+        // 加载内容
+        handleQueryContent(selectedKeys[0]);
+      }
+    };
+
     onMounted(() => {
       handleQuery()
     })
     return {
-      level1
+      level1,
+      html,
+      onSelect
     }
   }
 }
