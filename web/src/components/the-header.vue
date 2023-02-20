@@ -4,7 +4,6 @@
     <a-menu
         theme="dark"
         mode="horizontal"
-        v-model:selectedKeys="selectedKeys1"
         :style="{ lineHeight: '64px' }"
     >
       <a-menu-item key="/">
@@ -49,9 +48,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import store from "@/store";
 
 declare let hexMd5: any;
 declare let KEY: any;
@@ -60,8 +60,8 @@ export default defineComponent({
   name: 'the-header',
   setup () {
     // 登录后保存
-    const user = ref();
-    user.value = {};
+    const user = computed(() => store.state.user);
+
     // 用来登录
     const loginUser = ref({
       loginName: "test",
@@ -72,6 +72,7 @@ export default defineComponent({
     const showLoginModal = () => {
       loginModalVisible.value = true;
     };
+
     // 登录
     const login = () => {
       console.log("开始登录");
@@ -83,12 +84,14 @@ export default defineComponent({
         if (data.success) {
           loginModalVisible.value = false;
           message.success("登录成功！");
-          user.value = data.content;
+
+          store.commit("setUser", data.content);
         } else {
           message.error(data.message);
         }
       });
     };
+
     return {
       loginModalVisible,
       loginModalLoading,
