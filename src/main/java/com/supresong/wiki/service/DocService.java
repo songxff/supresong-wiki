@@ -47,6 +47,11 @@ public class DocService {
         //进行返回经过构建后的返回值
         return respkList;
     }
+    /**
+     * 分页查询
+     * @param req
+     * @return
+     */
     public PageResp<DocQueryResp> list(DocQueryReq req){
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
