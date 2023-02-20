@@ -125,13 +125,13 @@ public class UserService {
      */
     public UserLoginResp login(UserLoginReq req) {
         User userDB = selectByLoginName(req.getLoginName());
-        if (ObjectUtils.isEmpty(req)){
+        if (ObjectUtils.isEmpty(userDB)){
             //为空
             LOG.info("用户名不存在,{}", req.getLoginName());
             throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
         }else{
             //不为空
-            if (req.getPassword().equals(userDB.getPassword())){
+            if (userDB.getPassword().equals(req.getPassword())){
                 //登录成功
                 UserLoginResp userLoginResp = CopyUtil.copy(userDB, UserLoginResp.class);
                 return userLoginResp;
