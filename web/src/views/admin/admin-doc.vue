@@ -231,6 +231,22 @@ export default defineComponent({
           }
         }
       }
+    };
+
+
+    /**
+     * 查询富文本内容
+     **/
+    const handleQueryContent = () => {
+      axios.get("/doc/find-content/" + doc.value.id).then((resp) => {
+        const data = resp.data;
+        if (data.success) {
+          // 渲染富文本内容
+          editor.txt.html(data.content)
+        } else {
+          message.error(data.message);
+        }
+      })
     }
 
 
@@ -241,6 +257,7 @@ export default defineComponent({
      */
     const edit = (record: any) => {
       doc.value = Tool.copy(record);
+      handleQueryContent();
       treeSelectData.value = Tool.copy(level1.value)
       setDisable(treeSelectData.value, record.id)
       treeSelectData.value.unshift({id: 0, name: '无'})

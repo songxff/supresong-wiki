@@ -44,6 +44,14 @@ public class DocController {
         return resp;
     }
 
+    @GetMapping("/find-content/{id}")
+    public CommonResp findContent(@PathVariable Long id) {
+        String content = docService.findContent(id);
+        CommonResp<String> resp = new CommonResp<>();
+        resp.setContent(content);
+        return resp;
+    }
+
     @DeleteMapping("/delete/{idsStr}")
     public CommonResp delete(@PathVariable String idsStr) {
         List<String> list = Arrays.asList(idsStr.split(","));

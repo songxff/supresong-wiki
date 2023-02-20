@@ -120,4 +120,16 @@ public class DocService {
         docMapper.deleteByExample(docExample);
     }
 
+    /**
+     * 富文本内容查询
+     * @param id
+     * @return
+     */
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        System.out.println(content.getContent());
+        return content.getContent();
+
+
+    }
 }
