@@ -4,17 +4,17 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-row>
+      <a-row :gutter="24">
         <a-col :span="8">
           <p>
             <a-form :model="param" layout="inline">
               <a-form-item>
-                <a-button type="primary" @click="handleQuery()" size="large">
+                <a-button type="primary" @click="handleQuery()">
                   查询
                 </a-button>
               </a-form-item>
               <a-form-item>
-                <a-button type="primary" @click="add()" size="large">
+                <a-button type="primary" @click="add()">
                   新增
                 </a-button>
               </a-form-item>
@@ -26,13 +26,14 @@
               :data-source="level1"
               :loading="loading"
               :pagination="false"
+              size="small"
           >
-            <template #cover="{ text: cover }">
-              <img v-if="cover" :src="cover" alt="avatar"/>
+            <template #name="{ text, record }">
+              {{record.sort}} {{text}}
             </template>
             <template v-slot:action="{ text, record }">
               <a-space size="small">
-                <a-button type="primary" @click="edit(record)">
+                <a-button type="primary" @click="edit(record)"  size="small">
                   编辑
                 </a-button>
                 <a-popconfirm
@@ -41,7 +42,7 @@
                     cancel-text="否"
                     @confirm="showConfirm(record.id)"
                 >
-                  <a-button type="primary" danger>
+                  <a-button type="danger" size="small">
                     删除
                   </a-button>
                 </a-popconfirm>
@@ -50,11 +51,20 @@
           </a-table>
         </a-col>
         <a-col :span="16">
-          <a-form :model="doc" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-            <a-form-item label="名称">
-              <a-input v-model:value="doc.name" />
+          <p>
+            <a-form layout="inline" :model="param">
+              <a-form-item>
+                <a-button type="primary" @click="handleSave()">
+                  保存
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </p>
+          <a-form :model="doc" layout="vertical">
+            <a-form-item>
+              <a-input v-model:value="doc.name" placeholder="请输入名称"/>
             </a-form-item>
-            <a-form-item label="父文档">
+            <a-form-item>
               <a-tree-select
                   v-model:value="doc.parent"
                   style="width: 100%"
@@ -64,15 +74,12 @@
                   tree-default-expand-all
                   :replaceFields="{title: 'name', key: 'id', value: 'id'}"
               >
-                <template #title="{ key, value }">
-                  <span style="color: #08c" v-if="key === '0-0-1'">Child Node1 {{ value }}</span>
-                </template>
               </a-tree-select>
             </a-form-item>
-            <a-form-item label="顺序">
-              <a-input v-model:value="doc.sort" />
+            <a-form-item >
+              <a-input v-model:value="doc.sort" placeholder="请输入顺序"/>
             </a-form-item>
-            <a-form-item label="顺序">
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
           </a-form>
@@ -136,19 +143,12 @@ export default defineComponent({
     param.value = {};
     const docs = ref();
     const loading = ref(false);
+    editor.config.zIndex = 0
     const columns = [
       {
         title: '名称',
-        dataIndex: 'name'
-      },
-      {
-        title: '父文档',
-        key: 'parent',
-        dataIndex: 'parent'
-      },
-      {
-        title: '排序',
-        dataIndex: 'sort'
+        dataIndex: 'name',
+        slots: { customRender: 'name' }
       },
       {
         title: '操作',
@@ -181,10 +181,8 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {
           docs.value = data.content;
-          console.log("原始数组：", docs.value);
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
-          console.log("树形结构：", level1);
         } else {
           message.error(data.message)
         }
@@ -198,15 +196,13 @@ export default defineComponent({
     const treeSelectData = ref()
     treeSelectData.value = []
     const doc = ref({});
-    const modalVisible = ref(false);
     const modalLoading = ref(false);
-    const handleModalOk = () => {
+    const handleSave = () => {
       modalLoading.value = true;
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;
         const data = response.data;
         if (data.success) {
-          modalVisible.value = false;
           //重新加载当前页码
           handleQuery();
         }else{
@@ -272,28 +268,20 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
-      modalVisible.value = true;
       doc.value = Tool.copy(record);
       treeSelectData.value = Tool.copy(level1.value)
       setDisable(treeSelectData.value, record.id)
       treeSelectData.value.unshift({id: 0, name: '无'})
-      setTimeout(function () {
-        editor.create()
-      }, 50)
     };
     /**
      * 新增
      */
     const add = () => {
-      modalVisible.value = true;
       doc.value = {
         ebookId: route.query.ebookId
       };
       treeSelectData.value = Tool.copy(level1.value);
       treeSelectData.value.unshift({id: 0, name: '无'});
-      setTimeout(function () {
-        editor.create()
-      }, 50)
     };
     /**
      * 删除
@@ -329,7 +317,8 @@ export default defineComponent({
 
 
     onMounted(() => {
-      handleQuery();
+      handleQuery()
+      editor.create()
     });
     return {
       //表格
@@ -348,9 +337,8 @@ export default defineComponent({
 
       //表单
       doc,
-      modalVisible,
       modalLoading,
-      handleModalOk,
+      handleSave,
       del
     }
   }
