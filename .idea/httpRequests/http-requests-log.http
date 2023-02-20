@@ -1,3 +1,23 @@
+GET http://localhost:8880/redis/get/282880305684156416
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-20T222551.200.json
+
+###
+
+GET http://localhost:8880/test/redis/set/123/test
+Accept: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-02-20T222432.404.json
+
+###
+
 GET http://localhost:8880/ebook/list?page=1&size=1000&category2Id=200
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
@@ -427,24 +447,6 @@ User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
 Accept-Encoding: br,deflate,gzip,x-gzip
 
 <> 2023-02-16T235315.200.json
-
-###
-
-GET http://localhost:8880/test/list
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2023-02-16T235044.500.json
-
-###
-
-GET http://localhost:8880/test/list
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.13 (Java/17.0.5)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-<> 2023-02-16T235008.500.json
 
 ###
 
