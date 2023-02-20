@@ -36,6 +36,9 @@ public class EbookService {
         if(!ObjectUtils.isEmpty(req.getName())) {
             criteria.andNameLike("%" + req.getName() + "%");
         }
+        if (!ObjectUtils.isEmpty(req.getCategory2Id())) {
+            criteria.andCategory2IdEqualTo(req.getCategory2Id());
+        }
         PageHelper.startPage(req.getPage(),req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
@@ -57,7 +60,7 @@ public class EbookService {
 
         List<EbookQueryResp> respkList = CopyUtil.copyList(ebookList, EbookQueryResp.class);
 
-        PageResp<EbookQueryResp> pageResp = new PageResp<>();
+        PageResp<EbookQueryResp> pageResp = new PageResp();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(respkList);
 
