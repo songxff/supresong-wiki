@@ -7,6 +7,7 @@ import com.supresong.wiki.domain.Doc;
 import com.supresong.wiki.domain.DocExample;
 import com.supresong.wiki.mapper.ContentMapper;
 import com.supresong.wiki.mapper.DocMapper;
+import com.supresong.wiki.mapper.DocMapperCust;
 import com.supresong.wiki.req.DocQueryReq;
 import com.supresong.wiki.req.DocSaveReq;
 import com.supresong.wiki.resp.DocQueryResp;
@@ -32,6 +33,9 @@ public class DocService {
 
     @Resource
     private ContentMapper contentMapper;
+
+    @Resource
+    private DocMapperCust docMapperCust;
 
     @Autowired
     private SnowFlake snowFlake;
@@ -96,8 +100,9 @@ public class DocService {
         if (ObjectUtils.isEmpty(doc.getId())){
             //新增
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
-
             content.setId(doc.getId());
             contentMapper.insert(content);
         }else {
@@ -132,6 +137,8 @@ public class DocService {
      */
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        // 文档阅读数+1
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)) {
             return "";
         } else {
