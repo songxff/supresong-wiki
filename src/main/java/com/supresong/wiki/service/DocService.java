@@ -147,4 +147,12 @@ public class DocService {
 
 
     }
+
+    /**
+     * 点赞数加一
+     * @param id
+     */
+    public void vote(Long id) {
+        docMapperCust.increaseVoteCount(id);
+    }
 }

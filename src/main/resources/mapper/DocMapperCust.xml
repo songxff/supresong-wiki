@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.supresong.wiki.mapper.DocMapperCust" >
+    <update id="increaseVoteCount">
+        update doc set vote_count = vote_count + 1 where id = #{id}
+    </update>
 
     <select id="increaseViewCount">
         update doc set view_count = view_count + 1 where id = #{id};
