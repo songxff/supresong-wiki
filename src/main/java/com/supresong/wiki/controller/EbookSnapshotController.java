@@ -3,6 +3,8 @@ package com.supresong.wiki.controller;
 import com.supresong.wiki.resp.CommonResp;
 import com.supresong.wiki.resp.StatisticResp;
 import com.supresong.wiki.service.EbookSnapshotService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,8 @@ import java.util.List;
 @RequestMapping("/ebook-snapshot")
 public class EbookSnapshotController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EbookSnapshotController.class);
+
     @Resource
     private EbookSnapshotService ebookSnapshotService;
 
@@ -22,6 +26,7 @@ public class EbookSnapshotController {
         List<StatisticResp> statisticResp = ebookSnapshotService.getStatistic();
         CommonResp<List<StatisticResp>> commonResp = new CommonResp<>();
         commonResp.setContent(statisticResp);
+        LOG.info("在传递值吗?{}", statisticResp.toString());
         return commonResp;
     }
 
