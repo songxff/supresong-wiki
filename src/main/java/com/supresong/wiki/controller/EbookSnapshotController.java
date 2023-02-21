@@ -29,7 +29,10 @@ public class EbookSnapshotController {
         LOG.info("在传递值吗?{}", statisticResp.toString());
         return commonResp;
     }
-
+    /**
+     * 30天数值统计
+     *
+     */
     @GetMapping("/get-30-statistic")
     public CommonResp get30Statistic() {
         List<StatisticResp> statisticResp = ebookSnapshotService.get30Statistic();

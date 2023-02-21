@@ -56,6 +56,7 @@
             t1.`date` asc;
     </select>
 
+
     <select id="get30Statistic" resultType="com.supresong.wiki.resp.StatisticResp">
         select
             t1.`date` as `date`,
