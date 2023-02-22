@@ -21,6 +21,7 @@
       <a-menu-item key="/about">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
+      <div class="login-main">
       <a-popconfirm
           title="确认退出登录?"
           ok-text="是"
@@ -37,6 +38,7 @@
       <a class="login-menu" v-show="!user.id" @click="showLoginModal">
         <span>登录</span>
       </a>
+      </div>
     </a-menu>
 
     <a-modal
@@ -133,7 +135,7 @@ export default defineComponent({
   width: 120px;
   height: 31px;
   /*background: rgba(255, 255, 255, 0.2);*/
-  margin: 16px 28px 16px;
+  /*margin: 16px 28px 16px;*/
   float: left;
   color: white;
   font-size: 18px;
@@ -141,6 +143,11 @@ export default defineComponent({
 .login-menu {
   float: right;
   color: white;
+  padding-right: 10px;
+}
+.login-main {
+  position: absolute;
+  right: 0%;
   padding-right: 10px;
 }
 </style>
